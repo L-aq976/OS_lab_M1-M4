@@ -58,7 +58,7 @@ void mytest(uint64_t a, uint64_t b, uint64_t m){
   FILE *fp = popen(cmd, "r");
   assert(fp);
   fscanf(fp, "%s", buf);
-  printf("popen() returns: %s\n", buf);
+  printf("popen() returns (the right answer): %s\n", buf);
   pclose(fp);
   return;
 }
