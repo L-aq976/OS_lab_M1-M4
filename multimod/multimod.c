@@ -6,7 +6,7 @@
 static uint64_t map[64];
 
 uint64_t modmadd(uint64_t, uint64_t, uint64_t);
-void int_map(uint64_t,uint64_t);
+void init_map(uint64_t,uint64_t);
 
 uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
   init_map(b,m);
