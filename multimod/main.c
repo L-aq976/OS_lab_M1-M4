@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-void my_test(uint64_t, uint64_t, uint64_t);
+void mytest(uint64_t, uint64_t, uint64_t);
 uint64_t multimod(uint64_t, uint64_t, uint64_t);
 
 void test(uint64_t a, uint64_t b, uint64_t m) {
@@ -12,6 +12,10 @@ void test(uint64_t a, uint64_t b, uint64_t m) {
 
 int main() {
   test(123, 456, 789);
+  mytest(123, 456, 789);
   test(123, 456, -1ULL);
+  mytest(123, 456, -1ULL);
   test(-2ULL, -2ULL, -1ULL); // should be 1
+  mytest(-2ULL, -2ULL, -1ULL);
+  return 0;
 }
