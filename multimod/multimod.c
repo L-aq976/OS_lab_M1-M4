@@ -45,7 +45,7 @@ uint64_t modmadd(uint64_t a, uint64_t b, uint64_t m){
   }
 }
 
-void test(uint64_t a, uint64_t b, uint64_t m){
+void mytest(uint64_t a, uint64_t b, uint64_t m){
   char cmd[256];
   char buf[256];
   snprintf(cmd, sizeof cmd,
