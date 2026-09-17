@@ -1,7 +1,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <assert.h>
+
 static uint64_t map[64];
+
 uint64_t modmadd(uint64_t, uint64_t, uint64_t);
 
 uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
