@@ -51,7 +51,7 @@ void mytest(uint64_t a, uint64_t b, uint64_t m){
   char cmd[256];
   char buf[256];
   snprintf(cmd, sizeof cmd,
-             "python3 -c 'print((%llu * %llu) // %llu)'",
+             "python3 -c 'print((%llu * %llu) %% %llu)'",
              (unsigned long long)a,
              (unsigned long long)b,
              (unsigned long long)m);
