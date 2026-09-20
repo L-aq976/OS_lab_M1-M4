@@ -106,5 +106,5 @@ __asm__(
     ".size asm_longjmp, .-asm_longjmp\n"
 );
 #else
-#error "asm_setjmp/asm_longjmp
+#error "asm_setjmp/asm_longjmp"
 #endif
