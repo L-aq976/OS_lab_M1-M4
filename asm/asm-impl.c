@@ -1,6 +1,13 @@
 #include "asm.h"
 #include <string.h>
 
+typedef long asm_jmp_buf[8];
+
+//告诉编译器某些函数有特殊行为，不要过度优化
+__attribute__((returns_twice)) int  asm_setjmp(asm_jmp_buf env);
+__attribute__((noreturn))      void asm_longjmp(asm_jmp_buf env, int val);
+
+
 int64_t asm_add(int64_t a, int64_t b) {
   // a=a+b;
   asm("addq %1, %0" : "+r"(a) : "r"(b) : "cc");
@@ -25,7 +32,24 @@ int asm_popcnt(uint64_t x) {
 }
 
 void *asm_memcpy(void *dest, const void *src, size_t n) {
-  return memcpy(dest, src, n);
+  // return memcpy(dest, src, n);
+  void *ret = dest;
+  size_t tmp;                       // 中转用的临时寄存器
+  asm volatile(
+      "testq %2, %2\n\t"            // n == 0 直接跳过（下面循环是 do-while）
+      "jz 2f\n"
+      "1:\n\t"
+      "movb (%1), %b3\n\t"          // 取一字节内存 -> 临时寄存器低 8 位
+      "movb %b3, (%0)\n\t"          // 临时寄存器 -> 目标内存
+      "incq %1\n\t"                 // src++
+      "incq %0\n\t"                 // dest++
+      "decq %2\n\t"                 // n--
+      "jnz 1b\n"                    // n != 0 就继续
+      "2:"
+      : "+r"(dest), "+r"(src), "+r"(n), "=&r"(tmp)
+      :
+      : "memory", "cc");
+  return ret;
 }
 
 int asm_setjmp(asm_jmp_buf env) {
