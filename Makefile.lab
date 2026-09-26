@@ -10,5 +10,4 @@ submit:
 git:
 	@git add $(shell find . -name "*.c") $(shell find . -name "*.h") -A --ignore-errors
 	@while (test -e .git/index.lock); do sleep 0.1; done
-	@(hostnamectl && uptime) | git commit -F - -q --author='ll <tracer@nju.edu.cn>' --no-verify --allow-empty
-	@sync
+	@(hostnamectl && uptime) | git commit -F - -q --author='ll <3286292643@qq.com>' --no-verify --allow-emp
