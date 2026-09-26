@@ -13,6 +13,8 @@ void display_statistic(void);
 
 static uint32_t seed;
 static char *tracefile;
+static int total_size_width    = 14;   // cache 容量 = 2^14 B，可用 -s 修改
+static int associativity_width = 2;    // 相联度 = 2^2 路，可用 -a 修改
 
 static void init_rand(uint32_t seed) {
   printf("random seed = %u\n", seed);
@@ -76,7 +78,7 @@ static void parse_args(int argc, char *argv[]) {
   int o;
   bool has_seed = false;
   char *p;
-  while ( (o = getopt(argc, argv, "-r:")) != -1) {
+  while ( (o = getopt(argc, argv, "-r:s:a:")) != -1) {
     switch (o) {
       case 'r': seed = strtol(optarg, &p, 0);
                 if (!(*optarg != '\0' && *p =='\0')) {
@@ -86,18 +88,38 @@ static void parse_args(int argc, char *argv[]) {
                   has_seed = true;
                 }
                 break;
+      case 's': total_size_width = (int)strtol(optarg, &p, 0);
+                if (!(*optarg != '\0' && *p == '\0')) {
+                  printf("invalid total_size_width: %s\n", optarg);
+                  assert(0);
+                }
+                break;
+      case 'a': associativity_width = (int)strtol(optarg, &p, 0);
+                if (!(*optarg != '\0' && *p == '\0')) {
+                  printf("invalid associativity_width: %s\n", optarg);
+                  assert(0);
+                }
+                break;
       case 1:
                 if (tracefile != NULL) printf("too much argument '%s', ignored\n", optarg);
                 else tracefile = optarg;
                 break;
       default:
-                printf("Usage: %s [-r seed] [trace_file]\n", argv[0]);
+                printf("Usage: %s [-r seed] [-s total_size_width] [-a associativity_width] [trace_file]\n", argv[0]);
                 assert(0);
     }
   }
 
   if (!has_seed) {
     seed = time(0);
+  }
+
+  /* 校验：组数必须 >= 1（cache 至少要能装下一个块）*/
+  if (total_size_width - BLOCK_WIDTH - associativity_width < 0) {
+    fprintf(stderr, "invalid cache config: total_size_width(%d) - BLOCK_WIDTH(%d) "
+                    "- associativity_width(%d) < 0, 组数会 <= 0\n",
+            total_size_width, BLOCK_WIDTH, associativity_width);
+    exit(1);
   }
 }
 
@@ -129,7 +151,7 @@ int main(int argc, char *argv[]) {
   init_rand(seed);
   init_mem();
 
-  init_cache(14, 2);
+  init_cache(total_size_width, associativity_width);
 
   replay_trace();
 
